@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { TttGame, TttSquare } from "../../../models/ttt-game.model";
+import { TttGame, TttGameEventType, TttGameStatus, TttSquare } from "../../../models/ttt-game.model";
 import { UserService } from "../../../service/user.service";
 
 @Component({
@@ -13,8 +13,11 @@ export class TttGameComponent implements OnInit {
   game!: TttGame;
 
   TttSquare = TttSquare;
+  TttGameStatus = TttGameStatus;
 
   playerType!: PlayerType;
+
+  loading = false;
 
   constructor(
     private userService: UserService,
@@ -22,21 +25,17 @@ export class TttGameComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.game = {
-      state: {
-        board: [
-          [0, 0, 0],
-          [0, 0, 0],
-          [0, 0, 0]
-        ],
-        xIsNext: true,
-        xTimeLeft: 0,
-        oTimeLeft: 0,
-        dateOfState: new Date()
-      }
-    } as any;
-
     this.determinePlayerType();
+
+    this.game.events.subscribe(event => {
+      if (event.type === TttGameEventType.MOVE) {
+        this.loading = false;
+      }
+    });
+
+    if (this.playerType !== PlayerType.SPECTATOR) {
+      this.game.join();
+    }
   }
 
   private determinePlayerType() {
@@ -50,11 +49,12 @@ export class TttGameComponent implements OnInit {
       return
     }
     this.playerType = PlayerType.SPECTATOR;
-
   }
 
-  move(i: number, j: number) {
-    console.log(i, j);
+  async move(i: number, j: number) {
+    if (this.loading) {
+      return;
+    }
     if (this.playerType === PlayerType.SPECTATOR) {
       return;
     }
@@ -67,7 +67,13 @@ export class TttGameComponent implements OnInit {
     if (this.playerType === PlayerType.O && this.game.state.xIsNext) {
       return;
     }
-    this.game.state.board[i][j] = this.playerType === PlayerType.X ? TttSquare.X : TttSquare.O;
+    this.loading = true;
+    try {
+      await this.game.move(i, j);
+    } catch (e) {
+      console.error(e);
+      this.loading = false;
+    }
   }
 }
 

@@ -1,0 +1,19 @@
+<div class="ttt-tournament" *ngIf="tournament">
+  <div class="owner-actions" *ngIf="isOwner">
+    <button (click)="startTournament()" *ngIf="tournament.state.status === TttTournamentStatus.NOT_STARTED">Start
+    </button>
+    <button (click)="closeTournament()" *ngIf="tournament.state.status === TttTournamentStatus.WAITING_FOR_PLAYERS">
+      Close
+    </button>
+  </div>
+  <div class="ttt-tournament-players-list" *ngIf="tournament.state.status === TttTournamentStatus.WAITING_FOR_PLAYERS">
+    <ul>
+      <li *ngFor="let player of tournament.state.players">{{ player.playerName }}</li>
+    </ul>
+  </div>
+  <app-ttt-tournament-bracket *ngIf="showBracket()"
+                              [tournament]="tournament"></app-ttt-tournament-bracket>
+  <app-ttt-game *ngIf="activeGame"
+                [game]="game"
+                [player]="player"></app-ttt-game>
+</div>

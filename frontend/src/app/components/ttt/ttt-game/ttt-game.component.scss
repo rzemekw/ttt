@@ -13,6 +13,11 @@
 
   width: 200px;
   height: 200px;
+
+  &.loading {
+    pointer-events: none;
+    opacity: 0.1;
+  }
 }
 
 .ttt-row {

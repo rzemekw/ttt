@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { TttService } from "../../../../service/ttt.service";
 import { TttTournamentListItem } from "../../../../models/ttt-tournament.model";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-ttt-tournament-list',
@@ -13,7 +14,8 @@ export class TttTournamentListComponent implements OnInit {
 
   constructor(
     private tttTournamentService: TttService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router,
   ) {
   }
 
@@ -23,7 +25,8 @@ export class TttTournamentListComponent implements OnInit {
 
   async join(t: TttTournamentListItem) {
     try {
-      await this.tttTournamentService.joinTournament(t.id)
+      await this.tttTournamentService.joinTournament(t.id);
+      this.router.navigate([`/tournament/${t.id}`]);
     } catch (e) {
       this.snackBar.open("Failed to join tournament - try changing username")
     }

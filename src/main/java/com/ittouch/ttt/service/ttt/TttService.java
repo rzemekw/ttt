@@ -1,5 +1,6 @@
 package com.ittouch.ttt.service.ttt;
 
+import com.ittouch.ttt.dto.ttt.game.TttGameDTO;
 import com.ittouch.ttt.dto.ttt.game.TttGameWinningLineDTO;
 import com.ittouch.ttt.dto.ttt.tournament.TttTournamentDTO;
 import com.ittouch.ttt.dto.ttt.tournament.TttTournamentListItemDTO;
@@ -288,6 +289,8 @@ public class TttService {
         state.setDateOfState(new Date());
         state.setStatus(TttGameStatus.IN_PROGRESS);
 
+        gameMessagingService.gameStarted(game.getGame());
+
         gameTimerService.startGameTimer(game.getGame().getId(), game.getGame().getState().getXTimeLeft(),
                 () -> playerTimedOut(tournament, game));
     }
@@ -317,5 +320,43 @@ public class TttService {
         return tournaments.values().stream()
                 .map(mappingService::mapToListItemDto)
                 .toList();
+    }
+
+    public TttGameDTO getGame(String id, String gameId) {
+        var tournament = tournaments.get(id);
+        if (tournament == null) {
+            throw new IllegalArgumentException("Tournament not found");
+        }
+        var game = tournament.getState().getGames().get(gameId);
+        if (game == null) {
+            throw new IllegalArgumentException("Game not found");
+        }
+        return mappingService.mapToDto(game.getGame());
+    }
+
+    public void joinGame(String username, String id, String gameId) {
+        var tournament = tournaments.get(id);
+        if (tournament == null) {
+            throw new IllegalArgumentException("Tournament not found");
+        }
+        var game = tournament.getState().getGames().get(gameId);
+        if (game == null) {
+            throw new IllegalArgumentException("Game not found");
+        }
+        var gameState = game.getGame().getState();
+        if (!gameState.getStatus().equals(TttGameStatus.SCHEDULED) && !gameState.getStatus().equals(TttGameStatus.NOT_STARTED)) {
+            return;
+        }
+        if (Objects.equals(game.getGame().getXPlayerName(), username)) {
+            game.getGame().setXPlayerJoined(true);
+            if (game.getGame().isOPlayerJoined()) {
+                startGame(game, tournament);
+            }
+        } else if (Objects.equals(game.getGame().getOPlayerName(), username)) {
+            game.getGame().setOPlayerJoined(true);
+            if (game.getGame().isXPlayerJoined()) {
+                startGame(game, tournament);
+            }
+        }
     }
 }

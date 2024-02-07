@@ -22,6 +22,7 @@ import {
 import {
   TttTournamentListComponent
 } from "./components/ttt/ttt-tournament/ttt-tournament-list/ttt-tournament-list.component";
+import { TttTournamentComponent } from "./components/ttt/ttt-tournament/ttt-tournament/ttt-tournament.component";
 
 @NgModule({
   imports: [
@@ -30,6 +31,7 @@ import {
     RouterModule.forRoot([
       {path: '', component: HomeComponent},
       {path: 'create-tournament', component: CreateTttTournamentComponent},
+      {path: 'tournament', component: TttTournamentComponent},
     ]),
     MatSelectModule,
     BrowserAnimationsModule,

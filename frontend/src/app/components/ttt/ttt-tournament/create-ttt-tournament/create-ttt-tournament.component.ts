@@ -27,6 +27,6 @@ export class CreateTttTournamentComponent {
 
     const tournament = await this.tttService.createTournament(this.name);
 
-    this.router.navigate(['/tournaments', tournament.id], { queryParams: { owner: true } });
+    this.router.navigate(['/tournament', tournament.id], { queryParams: { owner: true } });
   }
 }

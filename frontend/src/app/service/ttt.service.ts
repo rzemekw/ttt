@@ -9,6 +9,9 @@ import {
 } from "../models/ttt-tournament.model";
 import { WebsocketService } from "./websocket.service";
 import { TttTournamentImpl } from "../models/impl/ttt-tournament-impl";
+import { TttGame, TttGameDTO, TttGameEvent } from "../models/ttt-game.model";
+import { TttGameImpl } from "../models/impl/ttt-game-impl";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +19,8 @@ import { TttTournamentImpl } from "../models/impl/ttt-tournament-impl";
 export class TttService {
   constructor(
     private http: HttpClient,
-    private webSocketService: WebsocketService
+    private webSocketService: WebsocketService,
+    private snackbar: MatSnackBar,
   ) {
   }
 
@@ -24,11 +28,11 @@ export class TttService {
     return lastValueFrom(this.http.get<TttTournamentListItem[]>(`/api/ttt/tournaments`));
   }
 
-  async joinTournament(id: number): Promise<void> {
+  async joinTournament(id: string): Promise<void> {
     await lastValueFrom(this.http.post<TttTournamentDTO>(`/api/ttt/tournaments/${id}/join`, {}));
   }
 
-  async getTournament(id: number): Promise<TttTournament> {
+  async getTournament(id: string): Promise<TttTournament> {
     const subscription = await this.webSocketService.subscribe(`/topic/ttt/tournaments/${id}`);
 
     const eventsUntilJoined: TttTournamentEvent[] = [];
@@ -48,9 +52,46 @@ export class TttService {
     return new TttTournamentImpl(tournamentDto, eventsUntilJoined, subscription);
   }
 
+  async getGame(id: string, tournamentId: string): Promise<TttGame> {
+    const subscription = await this.webSocketService.subscribe(`/topic/ttt/games/${id}`);
+
+    const eventsUntilJoined: TttGameEvent[] = [];
+    const s = subscription.events.subscribe((event: TttGameEvent) => {
+      eventsUntilJoined.push(event);
+    });
+
+    let gameDTO: TttGameDTO;
+    try {
+      gameDTO = await lastValueFrom(this.http.get<TttGameDTO>(`/api/ttt/tournaments/${tournamentId}/games/${id}`));
+      s.unsubscribe()
+    } catch (e) {
+      subscription.unsubscribe();
+      throw e;
+    }
+
+    return new TttGameImpl(tournamentId, gameDTO, eventsUntilJoined, subscription, this.snackbar, this);
+  }
+
   async createTournament(name: string): Promise<TttTournamentDTO> {
     const body = {name};
     return lastValueFrom(this.http.post<TttTournamentDTO>(`/api/ttt/tournaments`, body));
+  }
+
+  async closeTournament(id: string): Promise<void> {
+    await lastValueFrom(this.http.post<TttTournamentDTO>(`/api/ttt/tournaments/${id}/close`, {}));
+  }
+
+  async startTournament(id: string): Promise<void> {
+    await lastValueFrom(this.http.post<TttTournamentDTO>(`/api/ttt/tournaments/${id}/start`, {}));
+  }
+
+  move(tournamentId: string, id: string, x: number, y: number) {
+    const body = {x, y};
+    return lastValueFrom(this.http.post<void>(`/api/ttt/tournaments/${tournamentId}/games/${id}/move`, body));
+  }
+
+  joinGame(tournamentId: string, id: string) {
+    return lastValueFrom(this.http.post<void>(`/api/ttt/tournaments/${tournamentId}/games/${id}/join`, {}));
   }
 }
 

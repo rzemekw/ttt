@@ -1,5 +1,7 @@
 package com.ittouch.ttt.api;
 
+import com.ittouch.ttt.dto.ttt.game.TttGameDTO;
+import com.ittouch.ttt.dto.ttt.game.TttGameMoveDTO;
 import com.ittouch.ttt.dto.ttt.tournament.CreateTttTournamentDTO;
 import com.ittouch.ttt.dto.ttt.tournament.TttTournamentDTO;
 import com.ittouch.ttt.dto.ttt.tournament.TttTournamentListItemDTO;
@@ -47,5 +49,21 @@ public class TttTournamentController {
     @PostMapping("/{id}/start")
     public void startTournament(@PathVariable String id) {
         tttService.startTournament(id);
+    }
+
+    @PostMapping("/{id}/games/{gameId}/move")
+    public void makeMove(@PathVariable String id, @PathVariable String gameId, @RequestBody TttGameMoveDTO dto) {
+        var username = authenticationService.getCurrentUserName();
+        tttService.playerMoved(username, id, gameId, dto.getX(), dto.getY());
+    }
+    @PostMapping("/{id}/games/{gameId}/join")
+    public void joinGame(@PathVariable String id, @PathVariable String gameId) {
+        var username = authenticationService.getCurrentUserName();
+        tttService.joinGame(username, id, gameId);
+    }
+
+    @GetMapping("/{id}/games/{gameId}")
+    public TttGameDTO getGame(@PathVariable String id, @PathVariable String gameId) {
+        return tttService.getGame(id, gameId);
     }
 }

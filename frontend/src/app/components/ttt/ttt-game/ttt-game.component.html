@@ -1,5 +1,5 @@
 <div class="ttt-game">
-  <div class="ttt-board">
+  <div class="ttt-board" [class.loading]="game.state.status === TttGameStatus.NOT_STARTED || loading">
     <div class="ttt-row" *ngFor="let row of game.state.board; let i = index">
       <div class="ttt-square" *ngFor="let square of row; let j = index" (click)="move(i, j)">
         <svg *ngIf="square === TttSquare.X" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

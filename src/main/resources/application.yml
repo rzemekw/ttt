@@ -1,5 +1,5 @@
 server:
   servlet:
     session:
-      timeout: 15m
+      timeout: 15000m
     context-path: /api

@@ -8,4 +8,7 @@ public class TttGame {
     private TttGameState state;
     private String xPlayerName;
     private String oPlayerName;
+
+    private boolean xPlayerJoined;
+    private boolean oPlayerJoined;
 }

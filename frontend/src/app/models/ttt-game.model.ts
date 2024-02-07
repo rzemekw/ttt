@@ -26,7 +26,7 @@ export enum TttGameStatus {
   O_WON = "O_WON",
 }
 export interface TttGameEvent {
-  eventType: TttGameEventType;
+  type: TttGameEventType;
 }
 
 export enum TttGameEventType {
@@ -36,7 +36,7 @@ export enum TttGameEventType {
 }
 
 export interface TttGameMoveEvent extends TttGameEvent {
-  eventType: TttGameEventType.MOVE;
+  type: TttGameEventType.MOVE;
   x: number;
   y: number;
 
@@ -49,7 +49,7 @@ export interface TttGameMoveEvent extends TttGameEvent {
 }
 
 export interface TttGameEndEvent extends TttGameEvent {
-  eventType: TttGameEventType.END;
+  type: TttGameEventType.END;
   winnerName: string;
 
   winningLine?: TttGameWinningLine;
@@ -63,13 +63,13 @@ export interface TttGameWinningLine {
 }
 
 export interface TttGameStartEvent extends TttGameEvent {
-  eventType: TttGameEventType.START;
+  type: TttGameEventType.START;
 
   eventDate: Date;
 }
 
 export interface TttGame {
-  id: number;
+  id: string;
   state: TttGameState;
 
   xPlayerName: string;
@@ -79,4 +79,15 @@ export interface TttGame {
   events: Observable<TttGameEvent>;
 
   move(x: number, y: number): Promise<void>;
+
+  join(): Promise<void>;
+
+  disconnect(): void;
+}
+
+export interface TttGameDTO {
+  id: string;
+  state: TttGameState;
+  xPlayerName: string;
+  oPlayerName: string;
 }

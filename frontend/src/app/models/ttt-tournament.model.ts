@@ -3,8 +3,8 @@ import { TttGameStatus } from "./ttt-game.model";
 
 export interface TttTournamentState {
   players: TttTournamentPlayer[];
-  games: TttTournamentGame[][];
-  gameMap: TttTournamentGame[][];
+  gameIds: string[][];
+  games: Record<string, TttTournamentGame>;
   status: TttTournamentStatus;
 }
 
@@ -22,7 +22,7 @@ export interface TttTournamentPlayer {
 }
 
 export interface TttTournament {
-  id: number;
+  id: string;
   name: string;
   state: TttTournamentState;
 
@@ -32,13 +32,13 @@ export interface TttTournament {
 }
 
 export interface TttTournamentDTO {
-  id: number;
+  id: string;
   name: string;
   state: TttTournamentState;
 }
 
 export interface TttTournamentListItem {
-  id: number;
+  id: string;
   name: string;
   status: TttTournamentStatus;
 }
@@ -52,7 +52,7 @@ export enum TttTournamentStatus {
 
 
 export interface TttTournamentEvent {
-  eventType: TttTournamentEventType;
+  type: TttTournamentEventType;
 }
 
 export enum TttTournamentEventType {
@@ -63,7 +63,24 @@ export enum TttTournamentEventType {
   TOURNAMENT_FINISHED = "TOURNAMENT_FINISHED"
 }
 
-export interface TttTournamentStartedEvent extends TttTournamentEvent {
-  eventType: TttTournamentEventType.TOURNAMENT_STARTED;
-  state: TttTournamentState;
+export interface TttTournamentTournamentClosedEvent extends TttTournamentEvent {
+  type: TttTournamentEventType.TOURNAMENT_CLOSED;
+  tournament: TttTournamentDTO;
+}
+
+export interface TttTournamentGameScheduledEvent extends TttTournamentEvent {
+  type: TttTournamentEventType.GAME_SCHEDULED;
+  gameId: string;
+  xPlayerName: string;
+  oPlayerName: string;
+  roundIndex: number;
+  inRoundIndex: number;
+}
+
+export interface TttTournamentGameEndedEvent extends TttTournamentEvent {
+  type: TttTournamentEventType.GAME_SCHEDULED;
+  gameId: string;
+  xWon: boolean;
+  roundIndex: number;
+  inRoundIndex: number;
 }
