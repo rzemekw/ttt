@@ -35,8 +35,8 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 )
                 .authorizeHttpRequests(a -> a
-                        .anyRequest()
-                        .permitAll()
+                        .requestMatchers("/user/login").permitAll()
+                        .anyRequest().authenticated()
 
                 )
                 .logout(AbstractHttpConfigurer::disable);

@@ -32,7 +32,7 @@ public class TttGameMessagingService {
         event.setEventDate(new Date());
         event.setX(x);
         event.setY(y);
-        event.setX(isX);
+        event.setXMoved(isX);
         event.setXTimeLeft(game.getState().getXTimeLeft());
         event.setOTimeLeft(game.getState().getOTimeLeft());
 

@@ -11,7 +11,7 @@ public class TttGameMoveEvent implements TttGameEvent {
     private int x;
     private int y;
 
-    private boolean isX;
+    private boolean xMoved;
 
     private Long xTimeLeft;
     private Long oTimeLeft;

@@ -62,7 +62,7 @@ public class TttMappingService {
 
     public TttTournamentStateDTO mapToDto(TttTournamentState state) {
         var result = new TttTournamentStateDTO();
-        result.setPlayers(mapToDto(state.getPlayers()));
+        result.setPlayers(mapToDto(state.getPlayers().values()));
         result.setGames(mapToTttTournamentGamesDTO(state.getGames()));
         result.setGameIds(state.getGameIds());
         result.setStatus(state.getStatus().name());

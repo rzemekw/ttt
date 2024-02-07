@@ -40,7 +40,7 @@ export interface TttGameMoveEvent extends TttGameEvent {
   x: number;
   y: number;
 
-  isX: boolean;
+  xMoved: boolean;
 
   xTimeLeft: number; // in milliseconds
   oTimeLeft: number; // in milliseconds

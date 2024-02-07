@@ -8,6 +8,7 @@ import com.ittouch.ttt.model.ttt.tournament.*;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Service
@@ -18,7 +19,7 @@ public class TttFactory {
         tournament.setId(UUID.randomUUID().toString());
 
         var state = new TttTournamentState();
-        state.setPlayers(new ConcurrentLinkedQueue<>());
+        state.setPlayers(new ConcurrentHashMap<>());
         state.setStatus(TttTournamentStatus.WAITING_FOR_PLAYERS);
 
         return tournament;

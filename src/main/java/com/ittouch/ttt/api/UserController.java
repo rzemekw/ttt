@@ -6,18 +6,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
-//    private final AuthenticationService authenticationService;
-//
-//    @GetMapping
-//    public String getCurrentUsername() {
-//        return authenticationService.getCurrentUserName();
-//    }
-//
-//    @PostMapping("/login")
-//    public void login(HttpServletRequest request, @RequestBody String username) {
-//        authenticationService.login(request, username);
-//    }
+    private final AuthenticationService authenticationService;
+
+    @GetMapping
+    public String getCurrentUsername() {
+        return authenticationService.getCurrentUserName();
+    }
+
+    @PostMapping("/login")
+    public void login(@RequestBody String username) {
+        authenticationService.login(username);
+    }
 }

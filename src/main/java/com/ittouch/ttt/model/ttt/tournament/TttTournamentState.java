@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Data
 public class TttTournamentState {
-    private Collection<TttTournamentPlayer> players;
+    private Map<String, TttTournamentPlayer> players; // userName -> player
     private List<List<String>> gameIds;
     private Map<String, TttTournamentGame> games;
     private TttTournamentStatus status;

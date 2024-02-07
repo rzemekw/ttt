@@ -31,13 +31,18 @@ public class TttService {
         return mappingService.mapToDto(tournament);
     }
 
-    public TttTournamentDTO joinTournament(String id, String username) {
+    public TttTournamentDTO joinTournament(String id, String username, String sessionId) {
         var tournament = tournaments.get(id);
         if (tournament == null) {
             throw new IllegalArgumentException("Tournament not found");
         }
         if (!tournament.getState().getStatus().equals(TttTournamentStatus.WAITING_FOR_PLAYERS)) {
-            tournament.getState().getPlayers().add(factory.createNewPlayer(username));
+            var prevPlayer = tournament.getState().getPlayers().get(username);
+            if (prevPlayer == null) {
+                tournament.getState().getPlayers().put(username, factory.createNewPlayer(username));
+            } else if (!prevPlayer.getSessionId().equals(sessionId)) {
+                throw new IllegalArgumentException("Player already joined with different session");
+            }
         } // todo exception + additional method for spectate
         return mappingService.mapToDto(tournament);
     }
@@ -76,7 +81,7 @@ public class TttService {
         var state = tournament.getState();
         state.setStatus(TttTournamentStatus.NOT_STARTED);
 
-        var shuffledPlayers = new ArrayList<>(state.getPlayers());
+        var shuffledPlayers = new ArrayList<>(state.getPlayers().keySet());
         Collections.shuffle(shuffledPlayers);
 
         var playersCount = shuffledPlayers.size();
@@ -93,12 +98,10 @@ public class TttService {
                 var xPlayer = Optional.of(processedPlayers++)
                         .filter(index -> index < playersCount)
                         .map(shuffledPlayers::get)
-                        .map(TttTournamentPlayer::getPlayerName)
                         .orElse(null);
                 var oPlayer = Optional.of(processedPlayers++)
                         .filter(index -> index < playersCount)
                         .map(shuffledPlayers::get)
-                        .map(TttTournamentPlayer::getPlayerName)
                         .orElse(null);
 
                 var game = factory.createNewTournamentGame(currentRound, i, xPlayer, oPlayer);
@@ -167,6 +170,7 @@ public class TttService {
             gameTimerService.startGameTimer(gameId, gameState.getOTimeLeft(), () -> playerTimedOut(tournament, game));
         } else {
             gameState.setOTimeLeft(gameState.getOTimeLeft() - timeSinceLastMove);
+            gameTimerService.startGameTimer(gameId, gameState.getXTimeLeft(), () -> playerTimedOut(tournament, game));
         }
 
         gameMessagingService.playerMoved(game.getGame(), x, y, isXPlayer);
