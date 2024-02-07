@@ -91,12 +91,47 @@ public class TttService {
         var gameIds = new ArrayList<List<String>>();
         var games = new HashMap<String, TttTournamentGame>();
 
-        int currentRoundGamesCount = findClosestPowerOfTwo(playersCount) / 2;
+        int currentRoundGamesCount = findClosestPowerOfTwo(playersCount) / 2; // 8/2 for 11, 4/2 for 4
         int processedPlayers = 0;
         int currentRound = 0;
+        int firstRoundGamesCount = playersCount - currentRoundGamesCount * 2;
+        if (firstRoundGamesCount != 0) {
+            var firstRound = new ArrayList<String>();
+            for (int i = 0; i < firstRoundGamesCount; i++) {
+                var xPlayer = shuffledPlayers.get(processedPlayers++);
+                var oPlayer = shuffledPlayers.get(processedPlayers++);
+                var game = factory.createNewTournamentGame(currentRound, i, xPlayer, oPlayer);
+                var gameId = game.getGame().getId();
+                games.put(gameId, game);
+                firstRound.add(gameId);
+            }
+            gameIds.add(Collections.unmodifiableList(firstRound));
+            currentRoundGamesCount /= 2;
+            currentRound++;
+        }
         while (currentRoundGamesCount > 0) {
             var roundGameIds = new ArrayList<String>();
             for (int i = 0; i < currentRoundGamesCount; i++) {
+                if (currentRound == 1 && firstRoundGamesCount != 0) {
+                    firstRoundGamesCount--;
+                    
+                    if (firstRoundGamesCount == 0 && i % 2 == 1) {
+                        var oPlayer = Optional.of(processedPlayers++)
+                                .filter(index -> index < playersCount)
+                                .map(shuffledPlayers::get)
+                                .orElse(null);
+                        var game = factory.createNewTournamentGame(currentRound, i, null, oPlayer);
+                        var gameId = game.getGame().getId();
+                        games.put(gameId, game);
+                        roundGameIds.add(gameId);
+                    } else {
+                        var game = factory.createNewTournamentGame(currentRound, i, null, null);
+                        var gameId = game.getGame().getId();
+                        games.put(gameId, game);
+                        roundGameIds.add(gameId);
+                    }
+                    continue;
+                }
                 var xPlayer = Optional.of(processedPlayers++)
                         .filter(index -> index < playersCount)
                         .map(shuffledPlayers::get)
@@ -113,6 +148,7 @@ public class TttService {
             }
             gameIds.add(Collections.unmodifiableList(roundGameIds));
             currentRoundGamesCount /= 2;
+            currentRound++;
         }
 
         state.setGameIds(Collections.unmodifiableList(gameIds));
@@ -129,6 +165,13 @@ public class TttService {
                 .map(state.getGames()::get)
                 .toList();
         firstRoundGames.forEach(game -> scheduleGame(game, tournament));
+
+        var secondRoundGameIds = state.getGameIds().get(1);
+        var secondRoundGamesBothPlayers = secondRoundGameIds.stream()
+                .map(state.getGames()::get)
+                .filter(game -> game.getGame().getXPlayerName() != null && game.getGame().getOPlayerName() != null)
+                .toList();
+        secondRoundGamesBothPlayers.forEach(game -> scheduleGame(game, tournament));
 
         tournamentMessagingService.tournamentStarted(tournament);
     }

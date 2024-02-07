@@ -23,6 +23,9 @@ import {
   TttTournamentListComponent
 } from "./components/ttt/ttt-tournament/ttt-tournament-list/ttt-tournament-list.component";
 import { TttTournamentComponent } from "./components/ttt/ttt-tournament/ttt-tournament/ttt-tournament.component";
+import {
+  TttTournamentBracketComponent
+} from "./components/ttt/ttt-tournament/ttt-tournament-bracket/ttt-tournament-bracket.component";
 
 @NgModule({
   imports: [
@@ -31,7 +34,7 @@ import { TttTournamentComponent } from "./components/ttt/ttt-tournament/ttt-tour
     RouterModule.forRoot([
       {path: '', component: HomeComponent},
       {path: 'create-tournament', component: CreateTttTournamentComponent},
-      {path: 'tournament', component: TttTournamentComponent},
+      {path: 'tournament/:id', component: TttTournamentComponent},
     ]),
     MatSelectModule,
     BrowserAnimationsModule,
@@ -50,7 +53,9 @@ import { TttTournamentComponent } from "./components/ttt/ttt-tournament/ttt-tour
     HomeComponent,
     UserDialogComponent,
     CreateTttTournamentComponent,
-    TttTournamentListComponent
+    TttTournamentListComponent,
+    TttTournamentComponent,
+    TttTournamentBracketComponent
   ],
   bootstrap: [
     AppComponent

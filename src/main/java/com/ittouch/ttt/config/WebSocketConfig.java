@@ -13,6 +13,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
+                .setAllowedOriginPatterns("*") //TODO dlaczego nie dziala bez tego na localu? + sprawdzic na prod
                 .withSockJS();
     }
 

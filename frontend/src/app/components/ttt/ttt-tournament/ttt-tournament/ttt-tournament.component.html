@@ -14,6 +14,5 @@
   <app-ttt-tournament-bracket *ngIf="showBracket()"
                               [tournament]="tournament"></app-ttt-tournament-bracket>
   <app-ttt-game *ngIf="activeGame"
-                [game]="game"
-                [player]="player"></app-ttt-game>
+                [game]="activeGame"></app-ttt-game>
 </div>

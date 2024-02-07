@@ -23,7 +23,37 @@ public class TttFactory {
         state.setStatus(TttTournamentStatus.WAITING_FOR_PLAYERS);
         tournament.setState(state);
 
+        mockPlayers(tournament);
+
         return tournament;
+    }
+
+    private void mockPlayers(TttTournament tournament) {
+        var state = tournament.getState();
+        var players = state.getPlayers();
+        players.put("player1", createNewPlayer("player1", "session1"));
+        players.put("player2", createNewPlayer("player2", "session2"));
+        players.put("player3", createNewPlayer("player3", "session3"));
+        players.put("player4", createNewPlayer("player4", "session4"));
+        players.put("player5", createNewPlayer("player5", "session5"));
+        players.put("player6", createNewPlayer("player6", "session6"));
+        players.put("player7", createNewPlayer("player7", "session7"));
+        players.put("player8", createNewPlayer("player8", "session8"));
+        players.put("player9", createNewPlayer("player9", "session9"));
+        players.put("player10", createNewPlayer("player10", "session10"));
+        players.put("player11", createNewPlayer("player11", "session11"));
+        players.put("player12", createNewPlayer("player12", "session12"));
+        players.put("player13", createNewPlayer("player13", "session13"));
+        players.put("player14", createNewPlayer("player14", "session14"));
+        players.put("player15", createNewPlayer("player15", "session15"));
+        players.put("player16", createNewPlayer("player16", "session16"));
+        players.put("player17", createNewPlayer("player17", "session17"));
+        players.put("player18", createNewPlayer("player18", "session18"));
+        players.put("player19", createNewPlayer("player19", "session19"));
+        players.put("player20", createNewPlayer("player20", "session20"));
+        players.put("player21", createNewPlayer("player21", "session21"));
+        players.put("player22", createNewPlayer("player22", "session22"));
+        players.put("player23", createNewPlayer("player23", "session23"));
     }
 
     public TttTournamentGame createNewTournamentGame(int round, int gameNumber, String playerX, String playerO) {

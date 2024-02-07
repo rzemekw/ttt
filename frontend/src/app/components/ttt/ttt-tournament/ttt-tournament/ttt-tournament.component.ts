@@ -6,7 +6,6 @@ import {
   TttTournamentGameScheduledEvent,
   TttTournamentStatus
 } from "../../../../models/ttt-tournament.model";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute } from "@angular/router";
 import { UserService } from "../../../../service/user.service";
 import { TttGame } from "../../../../models/ttt-game.model";
@@ -26,7 +25,6 @@ export class TttTournamentComponent implements OnInit {
 
   constructor(
     private tttService: TttService,
-    private snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private userService: UserService
   ) {
@@ -35,13 +33,14 @@ export class TttTournamentComponent implements OnInit {
   async ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id') as string
     this.isOwner = !!this.route.snapshot.queryParamMap.get('owner')
-    this.tournament = await this.tttService.getTournament(id)
+    this.tournament = await this.tttService.getTournament(id);
+    console.log(this.tournament)
 
-    this.tournament.events.subscribe(event => {
+    this.tournament.events.subscribe(async event => {
       if (event.type === TttTournamentEventType.GAME_SCHEDULED) {
         const actualEvent = event as TttTournamentGameScheduledEvent;
         if (this.userService.getUserName() === actualEvent.xPlayerName || this.userService.getUserName() === actualEvent.oPlayerName) {
-          this.activeGame = this.tttService.getGame(actualEvent.gameId);
+          this.activeGame = await this.tttService.getGame(actualEvent.gameId, this.tournament.id);
         }
       }
     });
@@ -56,7 +55,7 @@ export class TttTournamentComponent implements OnInit {
   }
 
   showBracket(): boolean {
-    if (this.tournament.state.status !== TttTournamentStatus.WAITING_FOR_PLAYERS) {
+    if (this.tournament.state.status === TttTournamentStatus.WAITING_FOR_PLAYERS) {
       return false;
     }
     return !this.activeGame

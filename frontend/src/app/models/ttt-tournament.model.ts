@@ -68,6 +68,12 @@ export interface TttTournamentTournamentClosedEvent extends TttTournamentEvent {
   tournament: TttTournamentDTO;
 }
 
+
+export interface TttTournamentTournamentFinishedEvent extends TttTournamentEvent {
+  type: TttTournamentEventType.TOURNAMENT_FINISHED;
+  winnerName: string;
+}
+
 export interface TttTournamentGameScheduledEvent extends TttTournamentEvent {
   type: TttTournamentEventType.GAME_SCHEDULED;
   gameId: string;

@@ -49,7 +49,7 @@ export class TttService {
       throw e;
     }
 
-    return new TttTournamentImpl(tournamentDto, eventsUntilJoined, subscription);
+    return new TttTournamentImpl(tournamentDto, eventsUntilJoined, subscription, this.snackbar);
   }
 
   async getGame(id: string, tournamentId: string): Promise<TttGame> {

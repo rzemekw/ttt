@@ -19,7 +19,7 @@ export class WebsocketService {
     if (this.stompClient) {
       return this.onConnected;
     }
-    const socket = new SockJS('http://localhost:8080/ws');
+    const socket = new SockJS('/api/ws');
     this.stompClient = Stomp.over(socket);
     this.stompClient.connect({}, () => this.connected(this.stompClient));
     return this.onConnected;

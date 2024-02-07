@@ -6,11 +6,12 @@ import {
   TttTournamentGameEndedEvent, TttTournamentGameScheduledEvent,
   TttTournamentState,
   TttTournamentStatus,
-  TttTournamentTournamentClosedEvent
+  TttTournamentTournamentClosedEvent, TttTournamentTournamentFinishedEvent
 } from "../ttt-tournament.model";
 import { concat, from, Observable, share, tap } from "rxjs";
 import { WebsocketSubscription } from "../../service/websocket.service";
 import { TttGameStatus } from "../ttt-game.model";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 export class TttTournamentImpl implements TttTournament {
   id: string;
@@ -21,7 +22,8 @@ export class TttTournamentImpl implements TttTournament {
   constructor(
     tournamentDto: TttTournamentDTO,
     eventsUntilJoined: TttTournamentEvent[],
-    private subscription: WebsocketSubscription
+    private subscription: WebsocketSubscription,
+    private snackBar: MatSnackBar,
   ) {
     this.id = tournamentDto.id;
     this.name = tournamentDto.name;
@@ -37,6 +39,8 @@ export class TttTournamentImpl implements TttTournament {
   processEvent(event: TttTournamentEvent) {
     if (event.type === TttTournamentEventType.TOURNAMENT_FINISHED) {
       this.subscription.unsubscribe();
+      const actualEvent = event as TttTournamentTournamentFinishedEvent;
+      this.snackBar.open(`Tournament finished. Winner: ${actualEvent.winnerName}`, 'Close');
       return;
     }
     if (event.type === TttTournamentEventType.TOURNAMENT_CLOSED) {

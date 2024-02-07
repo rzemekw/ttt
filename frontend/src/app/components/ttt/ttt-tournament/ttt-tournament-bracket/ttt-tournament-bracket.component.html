@@ -3,14 +3,14 @@
     <div class="ttt-tournament-game mat-elevation-z7" *ngFor="let gameId of round;" (click)="gameClicked(gameId)">
       <div class="player-name">
         <ng-container *ngIf="getGame(gameId).xPlayerName">
-          <b *ngIf="getGame(gameId).status === TttGameStatus.X_WON">{{getGame(gameId)}}</b>
-          <span *ngIf="getGame(gameId).status !== TttGameStatus.X_WON">{{getGame(gameId).xPlayerName}}</span>
+          <b *ngIf="getGame(gameId).status === TttGameStatus.X_WON">{{ getGame(gameId) }}</b>
+          <span *ngIf="getGame(gameId).status !== TttGameStatus.X_WON">{{ getGame(gameId).xPlayerName }}</span>
         </ng-container>
       </div>
       <div class="player-name">
         <ng-container *ngIf="getGame(gameId).oPlayerName">
-          <b *ngIf="getGame(gameId).status === TttGameStatus.O_WON">{{getGame(gameId)}}</b>
-          <span *ngIf="getGame(gameId).status !== TttGameStatus.O_WON">{{getGame(gameId).oPlayerName}}</span>
+          <b *ngIf="getGame(gameId).status === TttGameStatus.O_WON">{{ getGame(gameId) }}</b>
+          <span *ngIf="getGame(gameId).status !== TttGameStatus.O_WON">{{ getGame(gameId).oPlayerName }}</span>
         </ng-container>
       </div>
     </div>
@@ -23,5 +23,6 @@
           <span>Open</span>
         </div>
       </div>
+    </ng-container>
   </div>
 </div>
