@@ -2,10 +2,7 @@ package com.ittouch.ttt.service.ttt;
 
 import com.ittouch.ttt.dto.ttt.game.TttGameDTO;
 import com.ittouch.ttt.dto.ttt.game.TttGameStateDTO;
-import com.ittouch.ttt.dto.ttt.tournament.TttTournamentDTO;
-import com.ittouch.ttt.dto.ttt.tournament.TttTournamentGameDTO;
-import com.ittouch.ttt.dto.ttt.tournament.TttTournamentPlayerDTO;
-import com.ittouch.ttt.dto.ttt.tournament.TttTournamentStateDTO;
+import com.ittouch.ttt.dto.ttt.tournament.*;
 import com.ittouch.ttt.model.ttt.game.TttGame;
 import com.ittouch.ttt.model.ttt.game.TttGameState;
 import com.ittouch.ttt.model.ttt.game.TttSquare;
@@ -95,5 +92,13 @@ public class TttMappingService {
 
     private List<TttTournamentPlayerDTO> mapToDto(Collection<TttTournamentPlayer> players) {
         return players.stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    public TttTournamentListItemDTO mapToListItemDto(TttTournament tournament) {
+        var result = new TttTournamentListItemDTO();
+        result.setId(tournament.getId());
+        result.setName(tournament.getName());
+        result.setStatus(tournament.getState().getStatus().name());
+        return result;
     }
 }

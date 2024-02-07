@@ -21,6 +21,7 @@ public class TttFactory {
         var state = new TttTournamentState();
         state.setPlayers(new ConcurrentHashMap<>());
         state.setStatus(TttTournamentStatus.WAITING_FOR_PLAYERS);
+        tournament.setState(state);
 
         return tournament;
     }
@@ -57,9 +58,10 @@ public class TttFactory {
         return game;
     }
 
-    public TttTournamentPlayer createNewPlayer(String username) {
+    public TttTournamentPlayer createNewPlayer(String username, String sessionId) {
         var player = new TttTournamentPlayer();
         player.setPlayerName(username);
+        player.setSessionId(sessionId);
         return player;
     }
 

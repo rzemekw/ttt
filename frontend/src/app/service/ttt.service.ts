@@ -20,8 +20,8 @@ export class TttService {
   ) {
   }
 
-  getTournaments(id: number): Promise<TttTournamentListItem[]> {
-    return lastValueFrom(this.http.get<TttTournamentListItem[]>(`/api/ttt/tournaments/${id}`));
+  getTournaments(): Promise<TttTournamentListItem[]> {
+    return lastValueFrom(this.http.get<TttTournamentListItem[]>(`/api/ttt/tournaments`));
   }
 
   async joinTournament(id: number): Promise<void> {

@@ -19,6 +19,9 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import {
   CreateTttTournamentComponent
 } from "./components/ttt/ttt-tournament/create-ttt-tournament/create-ttt-tournament.component";
+import {
+  TttTournamentListComponent
+} from "./components/ttt/ttt-tournament/ttt-tournament-list/ttt-tournament-list.component";
 
 @NgModule({
   imports: [
@@ -44,7 +47,8 @@ import {
     TttGameComponent,
     HomeComponent,
     UserDialogComponent,
-    CreateTttTournamentComponent
+    CreateTttTournamentComponent,
+    TttTournamentListComponent
   ],
   bootstrap: [
     AppComponent

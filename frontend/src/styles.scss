@@ -12,3 +12,6 @@ body {
 .app > .container > * {
   flex-grow: 1;
 }
+.app > .container > router-outlet {
+  flex-grow: 0;
+}

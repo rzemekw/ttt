@@ -2,6 +2,7 @@ package com.ittouch.ttt.service.ttt;
 
 import com.ittouch.ttt.dto.ttt.game.TttGameWinningLineDTO;
 import com.ittouch.ttt.dto.ttt.tournament.TttTournamentDTO;
+import com.ittouch.ttt.dto.ttt.tournament.TttTournamentListItemDTO;
 import com.ittouch.ttt.model.ttt.game.TttGame;
 import com.ittouch.ttt.model.ttt.game.TttGameStatus;
 import com.ittouch.ttt.model.ttt.game.TttSquare;
@@ -36,10 +37,10 @@ public class TttService {
         if (tournament == null) {
             throw new IllegalArgumentException("Tournament not found");
         }
-        if (!tournament.getState().getStatus().equals(TttTournamentStatus.WAITING_FOR_PLAYERS)) {
+        if (tournament.getState().getStatus().equals(TttTournamentStatus.WAITING_FOR_PLAYERS)) {
             var prevPlayer = tournament.getState().getPlayers().get(username);
             if (prevPlayer == null) {
-                tournament.getState().getPlayers().put(username, factory.createNewPlayer(username));
+                tournament.getState().getPlayers().put(username, factory.createNewPlayer(username, sessionId));
             } else if (!prevPlayer.getSessionId().equals(sessionId)) {
                 throw new IllegalArgumentException("Player already joined with different session");
             }
@@ -310,5 +311,11 @@ public class TttService {
             throw new IllegalArgumentException("Tournament not found");
         }
         return mappingService.mapToDto(tournament);
+    }
+
+    public List<TttTournamentListItemDTO> getTournaments() {
+        return tournaments.values().stream()
+                .map(mappingService::mapToListItemDto)
+                .toList();
     }
 }
