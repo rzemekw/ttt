@@ -4,6 +4,7 @@ import { TttGameStatus } from "./ttt-game.model";
 export interface TttTournamentState {
   players: TttTournamentPlayer[];
   games: TttTournamentGame[][];
+  gameMap: TttTournamentGame[][];
   status: TttTournamentStatus;
 }
 

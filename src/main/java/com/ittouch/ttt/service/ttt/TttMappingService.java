@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,17 +64,17 @@ public class TttMappingService {
         var result = new TttTournamentStateDTO();
         result.setPlayers(mapToDto(state.getPlayers()));
         result.setGames(mapToTttTournamentGamesDTO(state.getGames()));
+        result.setGameIds(state.getGameIds());
         result.setStatus(state.getStatus().name());
         return result;
     }
 
-    private List<List<TttTournamentGameDTO>> mapToTttTournamentGamesDTO(List<List<TttTournamentGame>> games) {
+    private Map<String, TttTournamentGameDTO> mapToTttTournamentGamesDTO(Map<String, TttTournamentGame> games) {
         if (games == null) {
             return null;
         }
-        return games.stream()
-                .map(s -> s.stream().map(this::mapToTttTournamentGameDto).collect(Collectors.toList()))
-                .collect(Collectors.toList());
+        return games.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> mapToTttTournamentGameDto(e.getValue())));
     }
 
     private TttTournamentGameDTO mapToTttTournamentGameDto(TttTournamentGame game) {
