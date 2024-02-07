@@ -303,4 +303,12 @@ public class TttService {
 
         return result;
     }
+
+    public TttTournamentDTO getTournament(String id) {
+        var tournament = tournaments.get(id);
+        if (tournament == null) {
+            throw new IllegalArgumentException("Tournament not found");
+        }
+        return mappingService.mapToDto(tournament);
+    }
 }

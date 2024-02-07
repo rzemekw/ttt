@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as SockJS from 'sockjs-client';
-import { CompatClient, Stomp, StompSubscription } from '@stomp/stompjs';
-import any = jasmine.any;
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { CompatClient, Stomp } from '@stomp/stompjs';
+import { Observable, Subject } from "rxjs";
 
 @Injectable({
   providedIn: 'root'

@@ -24,27 +24,11 @@ export class TttService {
     return lastValueFrom(this.http.get<TttTournamentListItem[]>(`/api/ttt/tournaments/${id}`));
   }
 
-  async joinTournament(id: number): Promise<TttTournament> {
-    const subscription = await this.webSocketService.subscribe(`/topic/ttt/tournaments/${id}`);
-
-    const eventsUntilJoined: TttTournamentEvent[] = [];
-    const s = subscription.events.subscribe((event: TttTournamentEvent) => {
-      eventsUntilJoined.push(event);
-    });
-
-    let tournamentDto: TttTournamentDTO;
-    try {
-      tournamentDto = await lastValueFrom(this.http.post<TttTournamentDTO>(`/api/ttt/tournaments/${id}/join`, {}));
-      s.unsubscribe()
-    } catch (e) {
-      subscription.unsubscribe();
-      throw e;
-    }
-
-    return new TttTournamentImpl(tournamentDto, eventsUntilJoined, subscription);
+  async joinTournament(id: number): Promise<void> {
+    await lastValueFrom(this.http.post<TttTournamentDTO>(`/api/ttt/tournaments/${id}/join`, {}));
   }
 
-  async spectateTournament(id: number): Promise<TttTournament> {
+  async getTournament(id: number): Promise<TttTournament> {
     const subscription = await this.webSocketService.subscribe(`/topic/ttt/tournaments/${id}`);
 
     const eventsUntilJoined: TttTournamentEvent[] = [];
@@ -64,11 +48,9 @@ export class TttService {
     return new TttTournamentImpl(tournamentDto, eventsUntilJoined, subscription);
   }
 
-  async createTournament(name: string): Promise<TttTournament> {
+  async createTournament(name: string): Promise<TttTournamentDTO> {
     const body = {name};
-    const tournamentDto = await lastValueFrom(this.http.post<TttTournamentDTO>(`/api/ttt/tournaments`, body));
-    const subscription = await this.webSocketService.subscribe(`/topic/ttt/tournaments/${tournamentDto.id}`);
-    return new TttTournamentImpl(tournamentDto, [], subscription);
+    return lastValueFrom(this.http.post<TttTournamentDTO>(`/api/ttt/tournaments`, body));
   }
 }
 

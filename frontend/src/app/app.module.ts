@@ -16,6 +16,9 @@ import { HomeComponent } from "./components/home/home.component";
 import { UserDialogComponent } from "./components/user-dialog/user-dialog.component";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
+import {
+  CreateTttTournamentComponent
+} from "./components/ttt/ttt-tournament/create-ttt-tournament/create-ttt-tournament.component";
 
 @NgModule({
   imports: [
@@ -23,9 +26,7 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
     ReactiveFormsModule,
     RouterModule.forRoot([
       {path: '', component: HomeComponent},
-      // {path: 'products/:productId', component: ProductDetailsComponent},
-      // {path: 'create-product', component: ProductFormComponent},
-      // {path: 'edit-product/:productId', component: ProductFormComponent},
+      {path: 'create-tournament', component: CreateTttTournamentComponent},
     ]),
     MatSelectModule,
     BrowserAnimationsModule,
@@ -43,6 +44,7 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
     TttGameComponent,
     HomeComponent,
     UserDialogComponent,
+    CreateTttTournamentComponent
   ],
   bootstrap: [
     AppComponent
