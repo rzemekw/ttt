@@ -1,0 +1,15 @@
+<div class="ttt-game">
+  <div class="ttt-board">
+    <div class="ttt-row" *ngFor="let row of game.state.board; let i = index">
+      <div class="ttt-square" *ngFor="let square of row; let j = index" (click)="move(i, j)">
+        <svg *ngIf="square === TttSquare.X" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg>
+        <svg *ngIf="square === TttSquare.O" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,14 @@
+@import "./theme.scss";
+
+body {
+  min-height: 100vh;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.app > .container > * {
+  flex-grow: 1;
+}
