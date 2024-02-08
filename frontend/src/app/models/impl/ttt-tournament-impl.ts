@@ -3,7 +3,7 @@ import {
   TttTournamentDTO,
   TttTournamentEvent,
   TttTournamentEventType,
-  TttTournamentGameEndedEvent, TttTournamentGameScheduledEvent,
+  TttTournamentGameEndedEvent, TttTournamentGameScheduledEvent, TttTournamentPlayerJoinedEvent,
   TttTournamentState,
   TttTournamentStatus,
   TttTournamentTournamentClosedEvent, TttTournamentTournamentFinishedEvent
@@ -37,6 +37,7 @@ export class TttTournamentImpl implements TttTournament {
   }
 
   processEvent(event: TttTournamentEvent) {
+    console.log(event)
     if (event.type === TttTournamentEventType.TOURNAMENT_FINISHED) {
       this.subscription.unsubscribe();
       const actualEvent = event as TttTournamentTournamentFinishedEvent;
@@ -48,6 +49,11 @@ export class TttTournamentImpl implements TttTournament {
       this.state = tournamentStartedEvent.tournament.state;
       return;
     }
+    if (event.type === TttTournamentEventType.PLAYER_JOINED) {
+      const tournamentStartedEvent = event as TttTournamentPlayerJoinedEvent;
+      this.state.players.push({playerName: tournamentStartedEvent.playerName});
+      return;
+    }
     if (event.type === TttTournamentEventType.TOURNAMENT_STARTED) {
       this.state.status = TttTournamentStatus.IN_PROGRESS;
       return;
@@ -55,10 +61,11 @@ export class TttTournamentImpl implements TttTournament {
     if (event.type === TttTournamentEventType.GAME_ENDED) {
       const actualEvent = event as TttTournamentGameEndedEvent;
       const endedGame = this.state.games[actualEvent.gameId];
-      endedGame.status = (actualEvent.xWon ? TttGameStatus.X_WON : TttGameStatus.O_WON);
+      endedGame.status = (actualEvent.xwon ? TttGameStatus.X_WON : TttGameStatus.O_WON);
       const isLatestGame = endedGame.roundIndex + 1 === this.state.gameIds.length;
       if (isLatestGame) {
         this.state.status = TttTournamentStatus.FINISHED;
+        return;
       }
 
       const nextGameRoundIndex = endedGame.roundIndex + 1;
@@ -66,10 +73,10 @@ export class TttTournamentImpl implements TttTournament {
 
       const nextGameId = this.state.gameIds[nextGameRoundIndex][nextGameInRoundIndex];
       const nextGame = this.state.games[nextGameId];
-      if (!nextGame.xPlayerName) {
-        nextGame.xPlayerName = endedGame.xPlayerName;
+      if (!nextGame.xplayerName) {
+        nextGame.xplayerName = endedGame.xplayerName;
       } else {
-        nextGame.oPlayerName = endedGame.xPlayerName;
+        nextGame.oplayerName = endedGame.xplayerName;
       }
       return;
     }
@@ -77,8 +84,8 @@ export class TttTournamentImpl implements TttTournament {
       const actualEvent = event as TttTournamentGameScheduledEvent;
       const game = this.state.games[actualEvent.gameId];
       game.status = TttGameStatus.SCHEDULED;
-      game.xPlayerName = actualEvent.xPlayerName;
-      game.oPlayerName = actualEvent.oPlayerName;
+      game.xplayerName = actualEvent.xplayerName;
+      game.oplayerName = actualEvent.oplayerName;
       return;
     }
   }

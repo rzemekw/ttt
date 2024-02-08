@@ -62,5 +62,11 @@ public class TttTournamentMessagingService {
         messagingTemplate.convertAndSend(getTournamentTopic(tournament.getId()), event);
     }
 
+    public void playerJoined(TttTournament tournament, String playerName) {
+        var event = new TttTournamentPlayerJoinedEvent();
+        event.setPlayerName(playerName);
+        messagingTemplate.convertAndSend(getTournamentTopic(tournament.getId()), event);
+    }
+
 
 }

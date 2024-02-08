@@ -2,10 +2,10 @@ import { Observable } from "rxjs";
 
 export interface TttGameState {
   board: TttSquare[][];
-  xIsNext: boolean;
+  xisNext: boolean;
 
-  xTimeLeft: number; // in milliseconds
-  oTimeLeft: number; // in milliseconds
+  xtimeLeft: number; // in milliseconds
+  otimeLeft: number; // in milliseconds
 
   dateOfState: Date;
 
@@ -40,10 +40,10 @@ export interface TttGameMoveEvent extends TttGameEvent {
   x: number;
   y: number;
 
-  xMoved: boolean;
+  xmoved: boolean;
 
-  xTimeLeft: number; // in milliseconds
-  oTimeLeft: number; // in milliseconds
+  xtimeLeft: number; // in milliseconds
+  otimeLeft: number; // in milliseconds
 
   eventDate: Date;
 }
@@ -72,9 +72,9 @@ export interface TttGame {
   id: string;
   state: TttGameState;
 
-  xPlayerName: string;
+  xplayerName: string;
 
-  oPlayerName: string;
+  oplayerName: string;
 
   events: Observable<TttGameEvent>;
 
@@ -88,6 +88,6 @@ export interface TttGame {
 export interface TttGameDTO {
   id: string;
   state: TttGameState;
-  xPlayerName: string;
-  oPlayerName: string;
+  xplayerName: string;
+  oplayerName: string;
 }

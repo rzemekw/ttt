@@ -20,6 +20,7 @@ public class TttGameTimerService {
 
     public TttGameTimerService() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        scheduler.setPoolSize(4);
         scheduler.initialize();
         this.taskScheduler = scheduler;
     }

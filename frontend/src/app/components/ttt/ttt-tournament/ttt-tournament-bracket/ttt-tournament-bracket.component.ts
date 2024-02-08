@@ -20,6 +20,7 @@ export class TttTournamentBracketComponent implements OnInit {
     const gameIds = this.tournament.state.gameIds;
     if (gameIds.length === 1) {
       this.missingFirstRoundGames = 0;
+      return;
     }
     const firstRoundGameIds = gameIds[0];
     const secondRoundGameIds = gameIds[1];

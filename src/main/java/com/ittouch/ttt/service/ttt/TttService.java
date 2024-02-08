@@ -42,6 +42,7 @@ public class TttService {
             var prevPlayer = tournament.getState().getPlayers().get(username);
             if (prevPlayer == null) {
                 tournament.getState().getPlayers().put(username, factory.createNewPlayer(username, sessionId));
+                tournamentMessagingService.playerJoined(tournament, username);
             } else if (!prevPlayer.getSessionId().equals(sessionId)) {
                 throw new IllegalArgumentException("Player already joined with different session");
             }
@@ -106,21 +107,20 @@ public class TttService {
                 firstRound.add(gameId);
             }
             gameIds.add(Collections.unmodifiableList(firstRound));
-            currentRoundGamesCount /= 2;
             currentRound++;
         }
         while (currentRoundGamesCount > 0) {
             var roundGameIds = new ArrayList<String>();
             for (int i = 0; i < currentRoundGamesCount; i++) {
-                if (currentRound == 1 && firstRoundGamesCount != 0) {
-                    firstRoundGamesCount--;
-                    
-                    if (firstRoundGamesCount == 0 && i % 2 == 1) {
-                        var oPlayer = Optional.of(processedPlayers++)
+                if (currentRound == 1 && firstRoundGamesCount > 0) {
+                    firstRoundGamesCount -= 2;
+
+                    if (firstRoundGamesCount == -1) {
+                        var xPlayer = Optional.of(processedPlayers++)
                                 .filter(index -> index < playersCount)
                                 .map(shuffledPlayers::get)
                                 .orElse(null);
-                        var game = factory.createNewTournamentGame(currentRound, i, null, oPlayer);
+                        var game = factory.createNewTournamentGame(currentRound, i, xPlayer, null);
                         var gameId = game.getGame().getId();
                         games.put(gameId, game);
                         roundGameIds.add(gameId);
@@ -166,6 +166,10 @@ public class TttService {
                 .toList();
         firstRoundGames.forEach(game -> scheduleGame(game, tournament));
 
+        if (state.getGameIds().size() == 1) {
+            tournamentMessagingService.tournamentStarted(tournament);
+            return;
+        }
         var secondRoundGameIds = state.getGameIds().get(1);
         var secondRoundGamesBothPlayers = secondRoundGameIds.stream()
                 .map(state.getGames()::get)
@@ -206,10 +210,11 @@ public class TttService {
         gameTimerService.cancelTaskForGame(gameId);
 
         board[x][y] = isXPlayer ? TttSquare.X : TttSquare.O;
-        gameState.setDateOfState(new Date());
         gameState.setXIsNext(!isXPlayer);
 
         var timeSinceLastMove = new Date().getTime() - gameState.getDateOfState().getTime();
+        gameState.setDateOfState(new Date());
+        log.info("Time since last move: {}", timeSinceLastMove);
         if (isXPlayer) {
             gameState.setXTimeLeft(gameState.getXTimeLeft() - timeSinceLastMove);
             gameTimerService.startGameTimer(gameId, gameState.getOTimeLeft(), () -> playerTimedOut(tournament, game));
@@ -224,6 +229,7 @@ public class TttService {
         if (winningLine != null) {
             gameState.setStatus(isXPlayer ? TttGameStatus.X_WON : TttGameStatus.O_WON);
             gameMessagingService.gameEnded(game.getGame(), winningLine);
+            processGameEndedForTournament(tournament, game);
         } else if (isBoardFull(board)) {
             var random = new Random();
             if (random.nextBoolean()) {
@@ -232,6 +238,7 @@ public class TttService {
                 gameState.setStatus(TttGameStatus.O_WON);
             }
             gameMessagingService.gameEnded(game.getGame(), null);
+            processGameEndedForTournament(tournament, game);
         }
     }
 
@@ -315,6 +322,7 @@ public class TttService {
     }
 
     private void scheduleGame(TttTournamentGame tournamentGame, TttTournament tournament) {
+        log.info("Scheduling game: {}", tournamentGame.getGame().getId());
         var game = tournamentGame.getGame();
         var state = game.getState();
         state.setDateOfState(new Date());
@@ -328,6 +336,7 @@ public class TttService {
     }
 
     private void startGame(TttTournamentGame game, TttTournament tournament) {
+        log.info("Starting game: {}", game.getGame().getId());
         var state = game.getGame().getState();
         state.setDateOfState(new Date());
         state.setStatus(TttGameStatus.IN_PROGRESS);

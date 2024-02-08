@@ -16,6 +16,7 @@ export class UserService {
   }
 
   async login(username: string): Promise<void> {
+    this.username = username;
     await lastValueFrom(this.http.post<void>('/api/user/login', username));
   }
 }

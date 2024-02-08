@@ -5,5 +5,6 @@ public enum TttTournamentEventType {
     TOURNAMENT_STARTED,
     GAME_SCHEDULED,
     GAME_ENDED,
-    TOURNAMENT_FINISHED
+    TOURNAMENT_FINISHED,
+    PLAYER_JOINED,
 }

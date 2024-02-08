@@ -6,7 +6,7 @@ import {
   TttGameEndEvent,
   TttGameEvent,
   TttGameEventType,
-  TttGameMoveEvent,
+  TttGameMoveEvent, TttGameStartEvent,
   TttGameState,
   TttGameStatus,
   TttSquare
@@ -18,9 +18,9 @@ export class TttGameImpl implements TttGame {
   id: string;
   state: TttGameState;
 
-  xPlayerName: string;
+  xplayerName: string;
 
-  oPlayerName: string;
+  oplayerName: string;
 
   events: Observable<TttGameEvent>;
 
@@ -39,8 +39,8 @@ export class TttGameImpl implements TttGame {
     this.tournamentId = tournamentId;
     this.id = gameDto.id;
     this.state = gameDto.state;
-    this.xPlayerName = gameDto.xPlayerName;
-    this.oPlayerName = gameDto.oPlayerName;
+    this.xplayerName = gameDto.xplayerName;
+    this.oplayerName = gameDto.oplayerName;
     const events = concat(from(eventsUntilJoined), subscription.events as Observable<TttGameEvent>);
     this.events = events.pipe(
       tap((event: TttGameEvent) => this.processEvent(event)),
@@ -50,25 +50,28 @@ export class TttGameImpl implements TttGame {
   }
 
   processEvent(event: TttGameEvent) {
+    console.log(event)
     if (event.type === TttGameEventType.END) {
       const actualEvent = event as TttGameEndEvent;
       this.snackbar.open(`Game ended. Winner: ${actualEvent.winnerName}`, "Close");
 
-      const xWon = actualEvent.winnerName === this.xPlayerName;
+      const xWon = actualEvent.winnerName === this.xplayerName;
       this.state.status = (xWon ? TttGameStatus.X_WON : TttGameStatus.O_WON);
       this.subscription.unsubscribe();
       return;
     }
     if (event.type === TttGameEventType.MOVE) {
       const actualEvent = event as TttGameMoveEvent;
-      this.state.board[actualEvent.x][actualEvent.y] = actualEvent.xMoved ? TttSquare.X : TttSquare.O;
-      this.state.xTimeLeft = actualEvent.xTimeLeft;
-      this.state.oTimeLeft = actualEvent.oTimeLeft;
+      this.state.board[actualEvent.x][actualEvent.y] = actualEvent.xmoved ? TttSquare.X : TttSquare.O;
+      this.state.xtimeLeft = actualEvent.xtimeLeft;
+      this.state.otimeLeft = actualEvent.otimeLeft;
       this.state.dateOfState = actualEvent.eventDate;
-      this.state.xIsNext = !actualEvent.xMoved;
+      this.state.xisNext = !actualEvent.xmoved;
       return;
     }
     if (event.type === TttGameEventType.START) {
+      const actualEvent = event as TttGameStartEvent;
+      this.state.dateOfState = actualEvent.eventDate;
       this.state.status = TttGameStatus.IN_PROGRESS;
       return;
     }

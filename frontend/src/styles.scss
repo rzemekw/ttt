@@ -11,6 +11,8 @@ body {
 
 .app > .container > * {
   flex-grow: 1;
+  display: grid;
+  place-items: center;
 }
 .app > .container > router-outlet {
   flex-grow: 0;

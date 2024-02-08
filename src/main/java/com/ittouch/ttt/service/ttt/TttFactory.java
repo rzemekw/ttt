@@ -23,7 +23,7 @@ public class TttFactory {
         state.setStatus(TttTournamentStatus.WAITING_FOR_PLAYERS);
         tournament.setState(state);
 
-        mockPlayers(tournament);
+//        mockPlayers(tournament);
 
         return tournament;
     }
@@ -42,18 +42,6 @@ public class TttFactory {
         players.put("player9", createNewPlayer("player9", "session9"));
         players.put("player10", createNewPlayer("player10", "session10"));
         players.put("player11", createNewPlayer("player11", "session11"));
-        players.put("player12", createNewPlayer("player12", "session12"));
-        players.put("player13", createNewPlayer("player13", "session13"));
-        players.put("player14", createNewPlayer("player14", "session14"));
-        players.put("player15", createNewPlayer("player15", "session15"));
-        players.put("player16", createNewPlayer("player16", "session16"));
-        players.put("player17", createNewPlayer("player17", "session17"));
-        players.put("player18", createNewPlayer("player18", "session18"));
-        players.put("player19", createNewPlayer("player19", "session19"));
-        players.put("player20", createNewPlayer("player20", "session20"));
-        players.put("player21", createNewPlayer("player21", "session21"));
-        players.put("player22", createNewPlayer("player22", "session22"));
-        players.put("player23", createNewPlayer("player23", "session23"));
     }
 
     public TttTournamentGame createNewTournamentGame(int round, int gameNumber, String playerX, String playerO) {
@@ -84,6 +72,7 @@ public class TttFactory {
         }
         state.setBoard(board);
         state.setStatus(TttGameStatus.NOT_STARTED);
+        game.setState(state);
 
         return game;
     }

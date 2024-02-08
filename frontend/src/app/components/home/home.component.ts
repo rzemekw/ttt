@@ -7,16 +7,5 @@ import { UserDialogComponent } from "../user-dialog/user-dialog.component";
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
-  loading = true;
-
-  constructor(
-    private dialog: MatDialog
-  ) {
-  }
-
-  async ngOnInit() {
-    this.dialog.open(UserDialogComponent, {disableClose: true}).afterClosed()
-      .subscribe(() => this.loading = false);
-  }
+export class HomeComponent {
 }

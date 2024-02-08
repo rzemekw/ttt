@@ -11,6 +11,7 @@ import { UserService } from "../../../../service/user.service";
 import { TttGame } from "../../../../models/ttt-game.model";
 
 @Component({
+  selector: 'app-ttt-tournament',
   templateUrl: './ttt-tournament.component.html',
   styleUrls: ['./ttt-tournament.component.scss']
 })
@@ -39,7 +40,7 @@ export class TttTournamentComponent implements OnInit {
     this.tournament.events.subscribe(async event => {
       if (event.type === TttTournamentEventType.GAME_SCHEDULED) {
         const actualEvent = event as TttTournamentGameScheduledEvent;
-        if (this.userService.getUserName() === actualEvent.xPlayerName || this.userService.getUserName() === actualEvent.oPlayerName) {
+        if (this.userService.getUserName() === actualEvent.xplayerName || this.userService.getUserName() === actualEvent.oplayerName) {
           this.activeGame = await this.tttService.getGame(actualEvent.gameId, this.tournament.id);
         }
       }
